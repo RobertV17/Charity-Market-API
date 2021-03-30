@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace Modules\Item\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -36,7 +36,5 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Item extends Model
 {
-    use HasFactory;
-
     protected $table = 'item';
 }

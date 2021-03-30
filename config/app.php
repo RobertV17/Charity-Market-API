@@ -1,5 +1,9 @@
 <?php
 
+use Modules\Api\Providers\ApiModuleServiceProvider;
+use Modules\Item\Providers\ItemServiceProvider;
+use Modules\User\Providers\UserServiceProvider;
+
 return [
 
     /*
@@ -174,6 +178,13 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
+        /*
+         * Module provider
+         */
+        ApiModuleServiceProvider::class,
+        ItemServiceProvider::class,
+        UserServiceProvider::class,
 
     ],
 

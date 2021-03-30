@@ -1,11 +1,26 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Modules\Api\Http\Controllers;
 
-use App\Models\Item;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
+use Modules\Item\Services\ItemService;
 
 class ItemController extends Controller
 {
+    /**
+     * @var ItemService
+     */
+    protected $service;
+
+    public function __construct(
+        ItemService $service
+    )
+    {
+        $this->service = $service;
+    }
+
+
     /**
      * @OA\Get(
      *     path="/items/all",
@@ -25,10 +40,11 @@ class ItemController extends Controller
      *     )
      * )
      */
-    public function getAllItems() {
+    public function getAllItems(): JsonResponse
+    {
         return response()->json([
             'status' => 'success',
-            'items' => Item::all()
+            'items' => $this->service->getAll()
         ]);
     }
 }
