@@ -9,13 +9,9 @@
 OS X & Linux:
 
 ```sh
-docker-compose up -d
-docker-compose exec app composer install
-docker-compose exec app php artisan key:generate
-docker-compose exec app php artisan migrate
-docker-compose exec app php artisan db:seed --class="Modules\Item\Database\Seeders\CategorySeeder"
-docker-compose exec app php artisan db:seed --class="Modules\User\Database\Seeders\UserSeeder"
-docker-compose exec app php artisan db:seed --class="Modules\Item\Database\Seeders\ItemSeeder"
+sh services/bash/prepare.sh
+sh services/bash/database.sh
+
 ```
 
 Документация к API тут - http://localhost/api/documentation  
