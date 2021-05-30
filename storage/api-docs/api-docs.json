@@ -15,43 +15,80 @@
                 "tags": [
                     "Items"
                 ],
-                "summary": "Получение всех существующих товаров.",
-                "operationId": "App\\Http\\Controllers\\ItemController::getAllItems",
+                "summary": "Получение всех существующих товаров с пагинацией",
+                "operationId": "itemsAll",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "successful operation"
+                        "description": "Все хорошо"
                     },
                     "500": {
-                        "description": ""
+                        "description": "Ошибка на стороне сервера"
                     }
                 }
             }
-        }
-    },
-    "components": {
-        "schemas": {
-            "Item": {
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                    "decs": {
-                        "type": "string"
-                    },
-                    "price": {
-                        "type": "decimal"
-                    },
-                    "cat_id": {
-                        "type": "integer"
-                    },
-                    "user_id": {
-                        "type": "integer"
+        },
+        "/items/add": {
+            "post": {
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Добавление товара авторизированным пользователем",
+                "operationId": "itemsAdd",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "Наименование",
+                                        "type": "string"
+                                    },
+                                    "cat_id": {
+                                        "description": "Id категории",
+                                        "type": "integer"
+                                    },
+                                    "desc": {
+                                        "description": "Описание",
+                                        "type": "string"
+                                    },
+                                    "price": {
+                                        "description": "Цена",
+                                        "type": "string"
+                                    },
+                                    "photo": {
+                                        "description": "Фотография",
+                                        "type": "file",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
                     }
                 },
-                "type": "object"
+                "responses": {
+                    "200": {
+                        "description": "Товар добавлен"
+                    },
+                    "500": {
+                        "description": "Ошибка на стороне сервера"
+                    }
+                }
             }
         }
     },

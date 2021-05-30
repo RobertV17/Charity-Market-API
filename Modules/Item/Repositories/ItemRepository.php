@@ -1,19 +1,17 @@
 <?php
 
-
 namespace Modules\Item\Repositories;
 
-
-use \Illuminate\Database\Eloquent\Collection;
+use \Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Modules\Item\Models\Item;
 
 class ItemRepository
 {
     /**
-     * @return Collection
+     * @return LengthAwarePaginator
      */
-    public function getAll(): Collection
+    public function getAll(): LengthAwarePaginator
     {
-        return Item::all();
+        return Item::query()->paginate(10);
     }
 }
