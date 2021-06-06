@@ -10,6 +10,51 @@
         }
     ],
     "paths": {
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Регистраци пользователя и получение токена",
+                "operationId": "authRegister",
+                "requestBody": {
+                    "description": "Pass user credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "login",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user1@mail.com"
+                                    },
+                                    "login": {
+                                        "type": "string",
+                                        "example": "user1"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "qwer1234"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Регистрация прошла успешно"
+                    }
+                }
+            }
+        },
         "/items/all": {
             "get": {
                 "tags": [

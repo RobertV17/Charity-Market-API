@@ -38,4 +38,14 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    // @todo-robert написать нормальный обработчик
+    public function render($request, Throwable $e)
+    {
+        if ($request->wantsJson()) {
+            return response()->error(null,$e->getMessage());
+        }
+
+        return parent::render($request, $e);
+    }
 }
