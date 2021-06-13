@@ -35,13 +35,13 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/auth/register",
+     *     path="/auth/registration",
      *     operationId="authRegister",
      *     summary="Регистраци пользователя и получение токена",
      *     tags={"Auth"},
      *     @OA\RequestBody(
      *    required=true,
-     *    description="Pass user credentials",
+     *    description="Данные пользователя",
      *    @OA\JsonContent(
      *       type="object",
      *       required={"login","email","password"},
@@ -52,7 +52,8 @@ class AuthController extends Controller
      * ),
      * @OA\Response(
      *    response=200,
-     *    description="Регистрация прошла успешно"
+     *    description="Регистрация прошла успешно",
+     *    @OA\JsonContent()
      * ))
      */
 
@@ -74,6 +75,29 @@ class AuthController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *     path="/auth/login",
+     *     operationId="authLogin",
+     *     summary="Аутентификация пользователя и получение токена",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *    required=true,
+     *    description="Данные пользователя",
+     *    @OA\JsonContent(
+     *       type="object",
+     *       required={"email","password"},
+     *       @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
+     *       @OA\Property(property="password", type="string", example="qwer1234")
+     *    ),
+     * ),
+     * @OA\Response(
+     *    response=200,
+     *    description="Аутентификация прошла успешно",
+     *    @OA\JsonContent()
+     * ))
+     */
+
+    /**
      * @param LoginUserRequest $request
      * @return mixed
      * @throws Exception
@@ -90,6 +114,21 @@ class AuthController extends Controller
                 'token' => $token
             ]);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/auth/logout",
+     *     operationId="authLogout",
+     *     security={{"bearerAuth":{}}},
+     *     summary="Выход из системы (деактивация всех токенов пользователя)",
+     *     tags={"Auth"},
+     *
+     *     @OA\Response(
+     *         response="200",
+     *         description="Все хорошо",
+     *     )
+     * )
+     */
 
     /**
      * @return mixed

@@ -16,7 +16,12 @@ use Illuminate\Routing\Controller as BaseController;
  * @OA\Server(
  *     url="http://localhost:80"
  * )
- */
+ * @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer"
+ *  )
+ **/
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;

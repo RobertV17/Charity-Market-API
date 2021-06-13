@@ -15,7 +15,6 @@ class StoreItemRequest extends FormRequest
      */
     public function authorize()
     {
-        // @todo-robert изменить при добавлении авторизации
         return true;
     }
 

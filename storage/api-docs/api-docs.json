@@ -10,7 +10,7 @@
         }
     ],
     "paths": {
-        "/auth/register": {
+        "/auth/registration": {
             "post": {
                 "tags": [
                     "Auth"
@@ -18,7 +18,7 @@
                 "summary": "Регистраци пользователя и получение токена",
                 "operationId": "authRegister",
                 "requestBody": {
-                    "description": "Pass user credentials",
+                    "description": "Данные пользователя",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -50,9 +50,78 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Регистрация прошла успешно"
+                        "description": "Регистрация прошла успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Аутентификация пользователя и получение токена",
+                "operationId": "authLogin",
+                "requestBody": {
+                    "description": "Данные пользователя",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user1@mail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "qwer1234"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Аутентификация прошла успешно",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Выход из системы (деактивация всех токенов пользователя)",
+                "operationId": "authLogout",
+                "responses": {
+                    "200": {
+                        "description": "Все хорошо"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/items/all": {
@@ -80,7 +149,12 @@
                     "500": {
                         "description": "Ошибка на стороне сервера"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/items/add": {
@@ -128,12 +202,27 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Товар добавлен"
-                    },
-                    "500": {
-                        "description": "Ошибка на стороне сервера"
+                        "description": "Товар добавлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer"
             }
         }
     },

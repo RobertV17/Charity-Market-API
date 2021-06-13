@@ -4,6 +4,7 @@ namespace Modules\Api\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Modules\Item\Dto\SaveItemDto;
 use Modules\Item\Requests\StoreItemRequest;
 use Modules\Item\Services\ItemService;
@@ -26,6 +27,7 @@ class ItemController extends Controller
      * @OA\Get(
      *     path="/items/all",
      *     operationId="itemsAll",
+     *     security={{"bearerAuth":{}}},
      *     summary="Получение всех существующих товаров с пагинацией",
      *     tags={"Items"},
      *     @OA\Parameter(
@@ -56,6 +58,7 @@ class ItemController extends Controller
      * @OA\Post(
      *     path="/items/add",
      *     operationId="itemsAdd",
+     *     security={{"bearerAuth":{}}},
      *     summary="Добавление товара авторизированным пользователем",
      *     tags={"Items"},
      *    	@OA\RequestBody(
@@ -96,18 +99,15 @@ class ItemController extends Controller
      *     @OA\Response(
      *         response="200",
      *         description="Товар добавлен",
-     *     ),
-     *     @OA\Response(
-     *         response="500",
-     *         description="Ошибка на стороне сервера"
+     *         @OA\JsonContent()
      *     )
      * )
      */
     public function add(StoreItemRequest $request)
     {
         $dto = SaveItemDto::populateByArray($request->toArray());
-        // @todo-robert получать ткущего пользователя, когда будет авторизация
-        $user = 1;
+        $user = Auth::user();
+
         $item = $this->service->addItemByUser($user, $dto);
 
         return response()->success('Item was added',

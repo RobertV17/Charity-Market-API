@@ -5,6 +5,7 @@ namespace Modules\Item\Factories;
 
 
 use Modules\Item\Models\Item;
+use Modules\User\Models\User;
 
 class ItemFactory
 {
@@ -17,10 +18,14 @@ class ItemFactory
     }
 
     /**
+     * @param User $user
      * @return Item
      */
-    public function create(): Item
+    public function createByUser(User $user): Item
     {
-        return new Item;
+        $item = new Item;
+        $item->user_id = $user->id;
+
+        return $item;
     }
 }

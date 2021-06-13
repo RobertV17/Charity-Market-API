@@ -41,12 +41,11 @@ class ItemService
     /**
      * @param $user
      * @param $dto
+     * @return Item
      */
     public function addItemByUser($user, $dto): Item
     {
-        $item = $this->factory->create();
-        // @todo-robert после авторизации сделай это фабрике, но уже с объектом User
-        $item->user_id = $user;
+        $item = $this->factory->createByUser($user);
 
         $this->populate($item, $dto);
         $this->save($item);
