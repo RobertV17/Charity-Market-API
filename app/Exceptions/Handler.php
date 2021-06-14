@@ -3,6 +3,11 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -39,13 +44,38 @@ class Handler extends ExceptionHandler
         });
     }
 
-    // @todo-robert написать нормальный обработчик
-    public function render($request, Throwable $e)
+    public function render($request, Throwable $exception)
     {
         if ($request->wantsJson()) {
-            return response()->error(null,$e->getMessage());
+            if ($exception instanceof UnauthorizedHttpException) {
+                return response()->error(null, $exception->getMessage(), 401);
+            }
+
+            if ($exception instanceof NotFoundHttpException) {
+                if ($exception->getMessage() === '') {
+                    $message = 'The specified URL cannot be found';
+                } else {
+                    $message = $exception->getMessage();
+                }
+
+                return response()->error(null, $message, 404);
+            }
+
+            if ($exception instanceof MethodNotAllowedHttpException) {
+                return response()->error(null, 'The specified method for the request is invalid', 405);
+            }
+
+            if ($exception instanceof HttpException) {
+                return response()->error(null, $exception->getMessage(), $exception->getStatusCode());
+            }
+
+            if ($exception instanceof AccessDeniedHttpException) {
+                return response()->error(null, $exception->getMessage(), $exception->getStatusCode());
+            }
+
+            return response()->error(null, 'Unexpected Exception. Try later', 500);
         }
 
-        return parent::render($request, $e);
+        return parent::render($request, $exception);
     }
 }

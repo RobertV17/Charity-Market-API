@@ -8,6 +8,7 @@ use Modules\Auth\Dto\RegistrationDto;
 use Modules\User\Repositories\UserRepository;
 use Modules\User\Factories\UserFactory;
 use Modules\User\Models\User;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserService
 {
@@ -41,7 +42,7 @@ class UserService
         $user = $this->repostory->getByEmail($email);
 
         if (!$user) {
-            throw new Exception('User not found');
+            throw new NotFoundHttpException('User not found');
         }
 
         return $user;

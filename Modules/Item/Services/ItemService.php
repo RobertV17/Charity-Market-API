@@ -10,6 +10,8 @@ use Modules\Item\Dto\SaveItemDto;
 use \Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use \Exception;
 use Modules\User\Models\User;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ItemService
 {
@@ -88,14 +90,14 @@ class ItemService
     /**
      * @param int $id
      * @return Item
-     * @throws Exception
+     * @throw NotFoundHttpException
      */
     public function getTryById(int $id): Item
     {
         $item = $this->repository->getById($id);
 
         if (!$item) {
-            throw new Exception('Item not founded');
+            throw new NotFoundHttpException('Item not founded');
         }
 
         return $item;
@@ -120,7 +122,7 @@ class ItemService
     public function checkUserAccessToItem(User $user, Item $item): void
     {
         if ($user->id !== $item->user_id) {
-            throw new Exception('Access denied');
+            throw new AccessDeniedHttpException('Access denied');
         }
     }
 
