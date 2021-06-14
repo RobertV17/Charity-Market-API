@@ -144,10 +144,47 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Все хорошо"
-                    },
-                    "500": {
-                        "description": "Ошибка на стороне сервера"
+                        "description": "Все хорошо",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/items/{id}": {
+            "get": {
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Получение указанного товара",
+                "operationId": "item",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id товара",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Все хорошо",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -203,6 +240,113 @@
                 "responses": {
                     "200": {
                         "description": "Товар добавлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/items/update/{id}": {
+            "post": {
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Изменение товара (доступ только у создателя)",
+                "operationId": "itemsUpdate",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id товара",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Указывать нужно только те поля что были изменены,\n     *                       а те что не тронуты не отсылай или пиши NULL",
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "description": "Наименование",
+                                        "type": "string"
+                                    },
+                                    "cat_id": {
+                                        "description": "Id категории",
+                                        "type": "integer"
+                                    },
+                                    "desc": {
+                                        "description": "Описание",
+                                        "type": "string"
+                                    },
+                                    "price": {
+                                        "description": "Цена",
+                                        "type": "string"
+                                    },
+                                    "photo": {
+                                        "description": "Фотография",
+                                        "type": "file",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Товар изменен",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/items/drop/{id}": {
+            "delete": {
+                "tags": [
+                    "Items"
+                ],
+                "summary": "Удаление товара (доступ только у создателя)",
+                "operationId": "itemsDrop",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id товара",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Все хорошо",
                         "content": {
                             "application/json": {
                                 "schema": {}

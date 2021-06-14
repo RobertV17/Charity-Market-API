@@ -11,6 +11,9 @@ Route::prefix('auth')->group(function() {
 });
 
 Route::group(['prefix' =>'items', 'middleware' => 'auth:sanctum'], function() {
-    Route::get('all', [ItemController::class,'get']);
+    Route::get('all', [ItemController::class,'all']);
+    Route::get('{id}', [ItemController::class,'show']);
     Route::post('add', [ItemController::class,'add']);
+    Route::post('update/{id}', [ItemController::class,'update']);
+    Route::delete('drop/{id}', [ItemController::class,'drop']);
 });
