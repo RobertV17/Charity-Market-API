@@ -40,10 +40,9 @@ class UpdateItemRequest extends FormRequest
     protected function failedValidation(Validator $validator): void
     {
         throw new HttpResponseException(
-            response()->error(
-                [],
+            response()->fail(
                 $validator->errors(),
-                403
+                'Incorrect data'
             )
         );
     }

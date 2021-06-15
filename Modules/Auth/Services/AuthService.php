@@ -3,10 +3,10 @@
 namespace Modules\Auth\Services;
 
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Support\Facades\Hash;
 use Modules\Auth\Dto\LoginDto;
 use Modules\User\Models\User;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class AuthService
 {
@@ -29,7 +29,7 @@ class AuthService
     public function authenticate(User $user, LoginDto $dto): string
     {
         if(!Hash::check($dto->password, $user->password)) {
-            throw new UnauthorizedHttpException('', 'The specified data is incorrect');
+            throw new AuthenticationException('The specified data is incorrect');
         }
 
         return $this->createToken($user);

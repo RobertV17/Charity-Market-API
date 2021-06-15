@@ -2,12 +2,12 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -47,8 +47,8 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if ($request->wantsJson()) {
-            if ($exception instanceof UnauthorizedHttpException) {
-                return response()->error(null, $exception->getMessage(), 401);
+            if ($exception instanceof AuthenticationException) {
+                return response()->fail(null, $exception->getMessage(), 401);
             }
 
             if ($exception instanceof NotFoundHttpException) {
@@ -58,24 +58,37 @@ class Handler extends ExceptionHandler
                     $message = $exception->getMessage();
                 }
 
-                return response()->error(null, $message, 404);
+                return response()->fail(null, $message, 404);
             }
 
             if ($exception instanceof MethodNotAllowedHttpException) {
-                return response()->error(null, 'The specified method for the request is invalid', 405);
-            }
-
-            if ($exception instanceof HttpException) {
-                return response()->error(null, $exception->getMessage(), $exception->getStatusCode());
+                return response()->fail(null, 'The specified method for the request is invalid', 405);
             }
 
             if ($exception instanceof AccessDeniedHttpException) {
-                return response()->error(null, $exception->getMessage(), $exception->getStatusCode());
+                return response()->fail(null, $exception->getMessage(), $exception->getStatusCode());
             }
 
-            return response()->error(null, 'Unexpected Exception. Try later', 500);
+            if ($exception instanceof HttpException) {
+                return response()->fail(null, $exception->getMessage(), $exception->getStatusCode());
+            }
+
+            return response()->error($this->getDebugInfo($exception), 'Unexpected Exception. Try later', 500);
         }
 
         return parent::render($request, $exception);
+    }
+
+    /**
+     * @param Throwable $exception
+     * @return array|null
+     */
+    public function getDebugInfo(Throwable $exception): ?array
+    {
+        if (env('APP_DEBUG')) {
+            return $exception->getTrace();
+        }
+
+        return null;
     }
 }
