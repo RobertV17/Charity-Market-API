@@ -44,6 +44,11 @@ class ItemController extends Controller
      *         response="200",
      *         description="Все хорошо",
      *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Пользователь не авторизован",
+     *         @OA\JsonContent()
      *     )
      * )
      */
@@ -71,6 +76,16 @@ class ItemController extends Controller
      *     @OA\Response(
      *         response="200",
      *         description="Все хорошо",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Пользователь не авторизован",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Указанный товар не найден",
      *         @OA\JsonContent()
      *     )
      * )
@@ -137,6 +152,16 @@ class ItemController extends Controller
      *     @OA\Response(
      *         response="200",
      *         description="Товар добавлен",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Пользователь не авторизован",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="403",
+     *         description="Указанные данные некорректны",
      *         @OA\JsonContent()
      *     )
      * )
@@ -216,6 +241,22 @@ class ItemController extends Controller
      *         response="200",
      *         description="Товар изменен",
      *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Пользователь не авторизован",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="403",
+     *         description="Указанные данные некорректны или пользователь не имеет права изменять этот товар,
+     *                      так как не является его продавцом",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Указанный товар не найден",
+     *         @OA\JsonContent()
      *     )
      * )
      */
@@ -258,6 +299,21 @@ class ItemController extends Controller
      *     @OA\Response(
      *         response="200",
      *         description="Все хорошо",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Пользователь не авторизован",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="403",
+     *         description="Пользователь не имеет права изменять этот товар, так как не является его продавцом",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="404",
+     *         description="Указанный товар не найден",
      *         @OA\JsonContent()
      *     )
      * )

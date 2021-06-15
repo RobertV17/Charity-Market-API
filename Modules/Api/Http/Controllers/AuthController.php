@@ -40,21 +40,27 @@ class AuthController extends Controller
      *     summary="Регистраци пользователя и получение токена",
      *     tags={"Auth"},
      *     @OA\RequestBody(
-     *    required=true,
-     *    description="Данные пользователя",
-     *    @OA\JsonContent(
-     *       type="object",
-     *       required={"login","email","password"},
-     *       @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
-     *       @OA\Property(property="login", type="string", example="user1"),
-     *       @OA\Property(property="password", type="string", example="qwer1234")
-     *    ),
-     * ),
-     * @OA\Response(
-     *    response=200,
-     *    description="Регистрация прошла успешно",
-     *    @OA\JsonContent()
-     * ))
+     *          required=true,
+     *          description="Данные пользователя",
+     *          @OA\JsonContent(
+     *             type="object",
+     *             required={"login","email","password"},
+     *             @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
+     *             @OA\Property(property="login", type="string", example="user1"),
+     *             @OA\Property(property="password", type="string", example="qwer1234")
+     *          ),
+     *     ),
+     *     @OA\Response(
+     *        response=200,
+     *        description="Регистрация прошла успешно",
+     *        @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *        response=403,
+     *        description="Указанные данные некорректны",
+     *        @OA\JsonContent()
+     *     )
+     * )
      */
 
     /**
@@ -81,20 +87,32 @@ class AuthController extends Controller
      *     summary="Аутентификация пользователя и получение токена",
      *     tags={"Auth"},
      *     @OA\RequestBody(
-     *    required=true,
-     *    description="Данные пользователя",
-     *    @OA\JsonContent(
-     *       type="object",
-     *       required={"email","password"},
-     *       @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
-     *       @OA\Property(property="password", type="string", example="qwer1234")
-     *    ),
-     * ),
-     * @OA\Response(
-     *    response=200,
-     *    description="Аутентификация прошла успешно",
-     *    @OA\JsonContent()
-     * ))
+     *          required=true,
+     *          description="Данные пользователя",
+     *          @OA\JsonContent(
+     *             type="object",
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", format="email", example="user1@mail.com"),
+     *             @OA\Property(property="password", type="string", example="qwer1234")
+     *          ),
+     *     ),
+     *
+     *     @OA\Response(
+     *        response=200,
+     *        description="Аутентификация прошла успешно",
+     *        @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *        response=401,
+     *        description="Неверный пароль",
+     *        @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *        response=404,
+     *        description="Не удалось найти пользователя по указанному email",
+     *        @OA\JsonContent()
+     *     )
+     *)
      */
 
     /**
@@ -126,6 +144,12 @@ class AuthController extends Controller
      *     @OA\Response(
      *         response="200",
      *         description="Все хорошо",
+     *         @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
+     *         response="401",
+     *         description="Пользователь не авторизован",
+     *         @OA\JsonContent()
      *     )
      * )
      */

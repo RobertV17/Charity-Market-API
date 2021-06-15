@@ -56,6 +56,14 @@
                                 "schema": {}
                             }
                         }
+                    },
+                    "403": {
+                        "description": "Указанные данные некорректны",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 }
             }
@@ -101,6 +109,22 @@
                                 "schema": {}
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Неверный пароль",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Не удалось найти пользователя по указанному email",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 }
             }
@@ -114,7 +138,20 @@
                 "operationId": "authLogout",
                 "responses": {
                     "200": {
-                        "description": "Все хорошо"
+                        "description": "Все хорошо",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -150,6 +187,14 @@
                                 "schema": {}
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -180,6 +225,22 @@
                 "responses": {
                     "200": {
                         "description": "Все хорошо",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Указанный товар не найден",
                         "content": {
                             "application/json": {
                                 "schema": {}
@@ -240,6 +301,22 @@
                 "responses": {
                     "200": {
                         "description": "Товар добавлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Указанные данные некорректны",
                         "content": {
                             "application/json": {
                                 "schema": {}
@@ -317,6 +394,30 @@
                                 "schema": {}
                             }
                         }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Указанные данные некорректны или пользователь не имеет права изменять этот товар,\n     *                      так как не является его продавцом",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Указанный товар не найден",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -347,6 +448,30 @@
                 "responses": {
                     "200": {
                         "description": "Все хорошо",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Пользователь не имеет права изменять этот товар, так как не является его продавцом",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Указанный товар не найден",
                         "content": {
                             "application/json": {
                                 "schema": {}
