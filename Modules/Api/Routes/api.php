@@ -5,7 +5,7 @@ use Modules\Api\Http\Controllers\ItemController;
 use Modules\Api\Http\Controllers\AuthController;
 
 Route::prefix('auth')->group(function() {
-    Route::post('registration', [AuthController::class,'register']);
+    Route::post('registration', [AuthController::class,'register'])->name('auth.registration');
     Route::post('login', [AuthController::class,'login']);
     Route::get('logout', [AuthController::class,'logout'])->middleware('auth:sanctum');
 });
