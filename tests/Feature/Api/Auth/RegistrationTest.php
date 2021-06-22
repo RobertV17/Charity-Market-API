@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Api\Auth;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\User\Models\User;
 use Tests\BaseTest;
@@ -95,8 +94,9 @@ class RegistrationTest extends BaseTest
 
     /**
      * @dataProvider validationTestsProvider
+     * @test
      */
-    public function test_request_should_fail_when($data, $validationError)
+    public function request_should_fail_when($data, $validationError)
     {
         $response = $this->postJson(route('auth.registration'), $data);
 
@@ -106,7 +106,8 @@ class RegistrationTest extends BaseTest
         $this->clearDb();
     }
 
-    public function test_request_should_fail_when_user_with_provided_email_already_exists()
+    /** @test  **/
+    public function request_should_fail_when_user_with_provided_email_already_exists()
     {
         $user = $this->createFakeUser();
 
@@ -129,7 +130,8 @@ class RegistrationTest extends BaseTest
         $this->clearDb();
     }
 
-    public function test_request_should_fail_when_user_with_provided_login_already_exists()
+    /** @test  **/
+    public function request_should_fail_when_user_with_provided_login_already_exists()
     {
         $user = $this->createFakeUser();
 
@@ -152,7 +154,8 @@ class RegistrationTest extends BaseTest
         $this->clearDb();
     }
 
-    public function test_user_registration_with_valid_data()
+    /** @test  **/
+    public function user_registration_with_valid_data()
     {
         $data = [
             "email"    => "tester@gmail.com",
@@ -171,11 +174,10 @@ class RegistrationTest extends BaseTest
         $response->assertStatus(200)
             ->assertExactJson($this->getSuccessResponse('Registration was successful!', $exceptedData));
 
-        $tokenIsExist = DB::table('personal_access_tokens')
-            ->where('tokenable_id', $user->id)
-            ->exists();
+        $tokenIsExist = $this->checkExistsAuthTokenByUser($user);
         $this->assertEquals(true, $tokenIsExist);
 
         $this->clearDb();
     }
+
 }

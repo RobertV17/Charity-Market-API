@@ -118,6 +118,14 @@
                             }
                         }
                     },
+                    "403": {
+                        "description": "Указанные данные некорректны",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
                     "404": {
                         "description": "Не удалось найти пользователя по указанному email",
                         "content": {

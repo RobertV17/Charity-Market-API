@@ -108,6 +108,11 @@ class AuthController extends Controller
      *        @OA\JsonContent()
      *     ),
      *     @OA\Response(
+     *        response=403,
+     *        description="Указанные данные некорректны",
+     *        @OA\JsonContent()
+     *     ),
+     *     @OA\Response(
      *        response=404,
      *        description="Не удалось найти пользователя по указанному email",
      *        @OA\JsonContent()

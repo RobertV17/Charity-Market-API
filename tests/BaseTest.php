@@ -15,6 +15,10 @@ use Modules\User\Models\User;
 class BaseTest extends TestCase
 {
     use WithFaker;
+
+    /**
+     *
+     */
     protected function clearDb(): void
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
@@ -28,6 +32,13 @@ class BaseTest extends TestCase
     }
 
     //        $this->withoutExceptionHandling();
+
+    /**
+     * @param $message
+     * @param  array  $data
+     *
+     * @return array
+     */
     public function getSuccessResponse($message, $data = [])
     {
         return [
@@ -37,6 +48,12 @@ class BaseTest extends TestCase
         ];
     }
 
+    /**
+     * @param $message
+     * @param  array  $data
+     *
+     * @return array
+     */
     public function getFailResponse($message, $data = [])
     {
         return [
@@ -46,6 +63,9 @@ class BaseTest extends TestCase
         ];
     }
 
+    /**
+     * @return User
+     */
     protected function createFakeUser(): User
     {
         $user = new User();
@@ -55,5 +75,17 @@ class BaseTest extends TestCase
         $user->save();
 
         return $user;
+    }
+
+    /**
+     * @param $user
+     *
+     * @return bool
+     */
+    protected function checkExistsAuthTokenByUser($user): bool
+    {
+        return DB::table('personal_access_tokens')
+            ->where('tokenable_id', $user->id)
+            ->exists();
     }
 }
