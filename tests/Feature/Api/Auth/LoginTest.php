@@ -3,23 +3,91 @@
 
 namespace Tests\Feature\Api\Auth;
 
+use Illuminate\Support\Str;
+use Modules\User\Models\User;
 use Tests\BaseTest;
 
 class LoginTest extends BaseTest
 {
+
+    public function validationTestsProvider(): array
+    {
+        return [
+            // EMAIL
+            "request_should_fail_when_no_email_is_provided" => [
+                [
+                    "password" => "1234qwer"
+                ],
+                ['email' => ['The email field is required.']]
+            ],
+
+            "request_should_fail_when_email_is_not_string" => [
+                [
+                    "email"    => 3,
+                    "password" => "1234qwer"
+                ],
+                ['email' => ['The email must be a string.']]
+            ],
+
+            "request_should_fail_when_email_has_more_than_255_characters" => [
+                [
+                    "email"    => Str::random(256),
+                    "password" => "1234qwer"
+                ],
+                ['email' => ['The email may not be greater than 255 characters.']]
+            ],
+            // PASSWORD
+            "request_should_fail_when_no_password_is_provided"            => [
+                [
+                    "email" => "tester@gmail.com",
+                ],
+                ['password' => ['The password field is required.']]
+            ],
+
+            "request_should_fail_when_password_is_not_string" => [
+                [
+                    "email"    => "tester@gmail.com",
+                    "password" => 3
+                ],
+                ['password' => ['The password must be a string.']]
+            ],
+
+            "request_should_fail_when_password_has_more_than_150_characters" => [
+                [
+                    "email"    => "tester@gmail.com",
+                    "password" => Str::random(151),
+                ],
+                ['password' => ['The password may not be greater than 150 characters.']]
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider validationTestsProvider
+     * @test
+     */
+    public function request_should_fail_when($data, $validationError)
+    {
+        $response = $this->postJson(route('auth.login'), $data);
+
+        $response->assertStatus(403)
+            ->assertExactJson($this->getFailResponse('Incorrect data', $validationError));
+
+        $this->clearDb();
+    }
+
     /** @test */
     public function login_user_wiht_valid_data()
     {
-        // 1) Проверить что респонс, что создался новый 2о1 валидный токен
-        $user = $this->createFakeUser();
+        $userPassword = 'pas1234';
+        $user = $this->createFakeUser($userPassword);
 
         $data = [
             "email"    => $user->email,
-//            @todo-robert мне не нравится что пароль для  fake юзера указывается так
-            "password" => "1234qwer"
+            "password" => $userPassword
         ];
 
-        $response = $this->postJson(route('auth.registration'), $data);
+        $response = $this->postJson(route('auth.login'), $data);
 
         $user = User::all()->first();
         $exceptedData = [
@@ -28,8 +96,42 @@ class LoginTest extends BaseTest
         ];
 
         $response->assertStatus(200)
-            ->assertExactJson($this->getSuccessResponse('Registration was successful!', $exceptedData));
+            ->assertExactJson($this->getSuccessResponse('Login was successful!', $exceptedData));
 
+        $tokenIsExist = $this->checkExistsAuthTokenByUser($user);
+        $this->assertEquals(true, $tokenIsExist);
+
+        $this->clearDb();
+    }
+
+    /** @test */
+    public function login_user_with_wrong_password()
+    {
+        $user = $this->createFakeUser();
+
+        $data = [
+            "email"    => $user->email,
+            "password" => 'wrong_password1123'
+        ];
+
+        $this->postJson(route('auth.login'), $data)
+            ->assertStatus(401)
+            ->assertExactJson($this->getFailResponse('The specified data is incorrect'));
+
+        $this->clearDb();
+    }
+
+    /** @test */
+    public function login_with_non_existent_email_in_db()
+    {
+        $data = [
+            "email"    => 'non_existent_email_in_db@gmail.com',
+            "password" => 'wrong_password1123'
+        ];
+
+        $this->postJson(route('auth.login'), $data)
+            ->assertStatus(404)
+            ->assertExactJson($this->getFailResponse('User not found'));
 
         $this->clearDb();
     }

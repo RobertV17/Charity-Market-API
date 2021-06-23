@@ -167,6 +167,6 @@ class AuthController extends Controller
         $user = Auth::user();
         $this->service->dropUserTokens($user);
 
-        return response()->success('Logout was successful!', []);
+        return response()->success('Logout was successful!', null);
     }
 }

@@ -8,7 +8,7 @@ use Tests\BaseTest;
 
 class RegistrationTest extends BaseTest
 {
-    public function validationTestsProvider()
+    public function validationTestsProvider(): array
     {
         return [
             // EMAIL
@@ -113,8 +113,8 @@ class RegistrationTest extends BaseTest
 
         $data = [
             "email"    => $user->email,
-            "login"    => "Best Tester",
-            "password" => "1234qwer"
+            "login"    => 'Best Tester',
+            "password" => '1234qwer'
         ];
 
         $response = $this->postJson(route('auth.registration'), $data);
@@ -138,7 +138,7 @@ class RegistrationTest extends BaseTest
         $data = [
             "email"    => "tester@gmail.com",
             "login"    => $user->login,
-            "password" => "1234qwer"
+            "password" => '1234qwer'
         ];
 
         $response = $this->postJson(route('auth.registration'), $data);

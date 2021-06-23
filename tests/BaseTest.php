@@ -6,6 +6,7 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Modules\User\Models\User;
 
 /**
@@ -31,15 +32,13 @@ class BaseTest extends TestCase
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
-    //        $this->withoutExceptionHandling();
-
     /**
      * @param $message
-     * @param  array  $data
+     * @param  array|null  $data
      *
      * @return array
      */
-    public function getSuccessResponse($message, $data = [])
+    public function getSuccessResponse($message, array $data = null): array
     {
         return [
             'status'  => 'success',
@@ -50,11 +49,11 @@ class BaseTest extends TestCase
 
     /**
      * @param $message
-     * @param  array  $data
+     * @param  array|null  $data
      *
      * @return array
      */
-    public function getFailResponse($message, $data = [])
+    public function getFailResponse($message, array $data = null): array
     {
         return [
             'status'  => 'fail',
@@ -64,17 +63,29 @@ class BaseTest extends TestCase
     }
 
     /**
+     * @param  string  $password
+     *
      * @return User
      */
-    protected function createFakeUser(): User
+    protected function createFakeUser(string $password = '1234qwer'): User
     {
         $user = new User();
         $user->login = 'user_0';
         $user->email = 'user_0@gmail.com';
-        $user->password = '1234qwer';
+        $user->password = Hash::make($password);
         $user->save();
 
         return $user;
+    }
+
+    /**
+     * @param  User  $user
+     *
+     * @return string
+     */
+    protected function createAuthTokenForUser(User $user): string
+    {
+        return $user->createToken($user->login)->plainTextToken;
     }
 
     /**
