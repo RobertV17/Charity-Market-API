@@ -38,7 +38,7 @@ class BaseTest extends TestCase
      *
      * @return array
      */
-    public function getSuccessResponse($message, array $data = null): array
+    public function getSuccessResponse($message = null, array $data = null): array
     {
         return [
             'status'  => 'success',

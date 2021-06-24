@@ -12,7 +12,7 @@ Route::prefix('auth')->group(function() {
 });
 
 Route::group(['prefix' =>'items', 'middleware' => 'auth:sanctum'], function() {
-    Route::get('all', [ItemController::class,'all']);
+    Route::get('all', [ItemController::class,'all'])->name('items.all');
     Route::get('{id}', [ItemController::class,'show']);
     Route::post('add', [ItemController::class,'add']);
     Route::post('update/{id}', [ItemController::class,'update']);
