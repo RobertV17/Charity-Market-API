@@ -28,8 +28,7 @@ class ItemService
     public function __construct(
         ItemRepository $repository,
         ItemFactory $factory
-    )
-    {
+    ) {
         $this->repository = $repository;
         $this->factory = $factory;
     }
@@ -45,6 +44,7 @@ class ItemService
     /**
      * @param $user
      * @param $dto
+     *
      * @return Item
      */
     public function addItemByUser($user, $dto): Item
@@ -58,8 +58,8 @@ class ItemService
     }
 
     /**
-     * @param Item $item
-     * @param SaveItemDto $dto
+     * @param  Item  $item
+     * @param  SaveItemDto  $dto
      */
     public function populate(Item $item, SaveItemDto $dto): void
     {
@@ -68,19 +68,19 @@ class ItemService
     }
 
     /**
-     * @param Item $item
-     * @param UploadedFile $photo
+     * @param  Item  $item
+     * @param  UploadedFile  $photo
      */
     public function setPreviewPhoto(Item $item, UploadedFile $photo): void
     {
-        $fileName = time() . '.' . $photo->extension();
+        $fileName = time().'.'.$photo->extension();
         $photo->move(public_path('images/items/preview'), $fileName);
 
-        $item->photo_url = url('images/items/preview/' . $fileName);
+        $item->photo_url = url('images/items/preview/'.$fileName);
     }
 
     /**
-     * @param Item $item
+     * @param  Item  $item
      */
     public function save(Item $item): void
     {
@@ -88,15 +88,16 @@ class ItemService
     }
 
     /**
-     * @param int $id
-     * @return Item
+     * @param $id
+     *
      * @throw NotFoundHttpException
+     * @return Item
      */
-    public function getTryById(int $id): Item
+    public function getTryById($id): Item
     {
         $item = $this->repository->getById($id);
 
-        if (!$item) {
+        if ( ! $item) {
             throw new NotFoundHttpException('Item not founded');
         }
 
@@ -104,8 +105,9 @@ class ItemService
     }
 
     /**
-     * @param Item $item
-     * @param User $user
+     * @param  Item  $item
+     * @param  User  $user
+     *
      * @throws Exception
      */
     public function drop(Item $item, User $user): void
@@ -115,8 +117,9 @@ class ItemService
     }
 
     /**
-     * @param User $user
-     * @param Item $item
+     * @param  User  $user
+     * @param  Item  $item
+     *
      * @throws Exception
      */
     public function checkUserAccessToItem(User $user, Item $item): void
@@ -127,9 +130,10 @@ class ItemService
     }
 
     /**
-     * @param Item $item
-     * @param SaveItemDto $dto
-     * @param User $user
+     * @param  Item  $item
+     * @param  SaveItemDto  $dto
+     * @param  User  $user
+     *
      * @throws Exception
      */
     public function update(Item $item, SaveItemDto $dto, User $user): void
@@ -138,7 +142,7 @@ class ItemService
 
         $item->fill(array_filter($dto->toArray()));
 
-        if($dto->photo) {
+        if ($dto->photo) {
             $this->setPreviewPhoto($item, $dto->photo);
         }
 

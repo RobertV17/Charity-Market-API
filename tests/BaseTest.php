@@ -7,6 +7,8 @@ namespace Tests;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Modules\Item\Models\Category;
+use Modules\Item\Models\Item;
 use Modules\User\Models\User;
 
 /**
@@ -98,5 +100,15 @@ class BaseTest extends TestCase
         return DB::table('personal_access_tokens')
             ->where('tokenable_id', $user->id)
             ->exists();
+    }
+
+    /**
+     * @param  int  $count
+     */
+    protected function createItems(int $count = 25): void
+    {
+        User::factory()->count(5)->create();
+        Category::factory()->count(5)->create();
+        Item::factory()->count($count)->create();
     }
 }
