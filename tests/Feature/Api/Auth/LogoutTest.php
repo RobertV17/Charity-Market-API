@@ -3,10 +3,17 @@
 
 namespace Tests\Feature\Api\Auth;
 
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Tests\BaseTest;
 
 class LogoutTest extends BaseTest
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->withoutMiddleware(ThrottleRequests::class);
+    }
+
     /** @test */
     public function request_should_fail_when_auth_token_no_provided()
     {

@@ -3,32 +3,16 @@
 
 namespace Tests\Feature\Api\Items;
 
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Modules\Item\Models\Item;
 use Tests\BaseTest;
 
 class GettingAllTest extends BaseTest
 {
-    /** @test */
-    public function request_should_fail_when_auth_token_no_provided()
+    public function setUp(): void
     {
-        $this->getJson(route('items.all'))
-            ->assertStatus(401)
-            ->assertExactJson($this->getFailResponse('Unauthenticated.'));
-
-        $this->clearDb();
-    }
-
-    /** @test */
-    public function request_should_fail_when_auth_token_is_wrong()
-    {
-        $user = $this->createFakeUser();
-        $token = $this->createAuthTokenForUser($user);
-
-        $this->getJson(route('items.all'), ['Authorization' => 'Bearer wrong1'.$token])
-            ->assertStatus(401)
-            ->assertExactJson($this->getFailResponse('Unauthenticated.'));
-
-        $this->clearDb();
+        parent::setUp();
+        $this->withoutMiddleware(ThrottleRequests::class);
     }
 
     /** @test */
@@ -460,6 +444,29 @@ class GettingAllTest extends BaseTest
                 'to'             => null,
                 'total'          => 0
             ]));
+
+        $this->clearDb();
+    }
+
+    /** @test */
+    public function request_should_fail_when_auth_token_no_provided()
+    {
+        $this->getJson(route('items.all'))
+            ->assertStatus(401)
+            ->assertExactJson($this->getFailResponse('Unauthenticated.'));
+
+        $this->clearDb();
+    }
+
+    /** @test */
+    public function request_should_fail_when_auth_token_is_wrong()
+    {
+        $user = $this->createFakeUser();
+        $token = $this->createAuthTokenForUser($user);
+
+        $this->getJson(route('items.all'), ['Authorization' => 'Bearer wrong1'.$token])
+            ->assertStatus(401)
+            ->assertExactJson($this->getFailResponse('Unauthenticated.'));
 
         $this->clearDb();
     }

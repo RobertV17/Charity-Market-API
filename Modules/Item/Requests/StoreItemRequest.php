@@ -5,6 +5,7 @@ namespace Modules\Item\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Modules\Item\Requests\Rules\CorrectPrice;
 
 class StoreItemRequest extends FormRequest
 {
@@ -25,11 +26,10 @@ class StoreItemRequest extends FormRequest
      */
     public function rules()
     {
-        // @todo-robert для price обдумать валидацию
         return [
             'title'  => 'required|string|max:100|unique:item',
             'desc'   => 'required|string|max:255',
-            'price'  => 'required',
+            'price'  => ['required', new CorrectPrice],
             'photo'  => 'required|image|max:10000',
             'cat_id' => 'required|exists:category,id'
         ];

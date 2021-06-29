@@ -39,4 +39,14 @@ class Item extends Model
         'cat_id',
         'user_id'
     ];
+
+    /**
+     * @param $value
+     *
+     * @return float
+     */
+    public function getPriceAttribute($value): float
+    {
+        return (float)$value;
+    }
 }

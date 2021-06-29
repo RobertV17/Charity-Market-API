@@ -3,9 +3,9 @@
 
 namespace Tests;
 
-
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Modules\Item\Models\Category;
 use Modules\Item\Models\Item;
@@ -19,9 +19,6 @@ class BaseTest extends TestCase
 {
     use WithFaker;
 
-    /**
-     *
-     */
     protected function clearDb(): void
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
@@ -32,6 +29,11 @@ class BaseTest extends TestCase
         DB::table('item')->truncate();
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+    }
+
+    protected function removeStoredItemPreviewImages(): void
+    {
+        File::deleteDirectory(public_path('images/items/preview'));
     }
 
     /**
@@ -111,4 +113,5 @@ class BaseTest extends TestCase
         Category::factory()->count(5)->create();
         Item::factory()->count($count)->create();
     }
+
 }

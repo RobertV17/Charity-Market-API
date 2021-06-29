@@ -3,11 +3,18 @@
 
 namespace Tests\Feature\Api\Items;
 
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Modules\Item\Models\Item;
 use \Tests\BaseTest;
 
 class GettingOneTest extends BaseTest
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->withoutMiddleware(ThrottleRequests::class);
+    }
+
     /** @test */
     public function request_schould_success_when_item_exists_and_id_valid()
     {

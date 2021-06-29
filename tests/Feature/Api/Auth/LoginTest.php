@@ -3,25 +3,31 @@
 
 namespace Tests\Feature\Api\Auth;
 
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Str;
 use Modules\User\Models\User;
 use Tests\BaseTest;
 
 class LoginTest extends BaseTest
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->withoutMiddleware(ThrottleRequests::class);
+    }
 
     public function validationTestsProvider(): array
     {
         return [
             // EMAIL
-            "request_should_fail_when_no_email_is_provided" => [
+            "no_email_is_provided" => [
                 [
                     "password" => "1234qwer"
                 ],
                 ['email' => ['The email field is required.']]
             ],
 
-            "request_should_fail_when_email_is_not_string" => [
+            "email_is_not_string" => [
                 [
                     "email"    => 3,
                     "password" => "1234qwer"
@@ -29,7 +35,7 @@ class LoginTest extends BaseTest
                 ['email' => ['The email must be a string.']]
             ],
 
-            "request_should_fail_when_email_has_more_than_255_characters" => [
+            "email_has_more_than_255_characters" => [
                 [
                     "email"    => Str::random(256),
                     "password" => "1234qwer"
@@ -37,7 +43,7 @@ class LoginTest extends BaseTest
                 ['email' => ['The email may not be greater than 255 characters.']]
             ],
             // PASSWORD
-            "request_should_fail_when_no_password_is_provided"            => [
+            "no_password_is_provided"            => [
                 [
                     "email" => "tester@gmail.com",
                 ],
@@ -77,7 +83,7 @@ class LoginTest extends BaseTest
     }
 
     /** @test */
-    public function login_user_wiht_valid_data()
+    public function login_user_with_valid_data()
     {
         $userPassword = 'pas1234';
         $user = $this->createFakeUser($userPassword);
