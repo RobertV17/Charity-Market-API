@@ -136,7 +136,7 @@ class ItemController extends Controller
      *                   ),
      *                  @OA\Property(
      *                      property="price",
-     *                      description="Цена",
+     *                      description="Цена (в формате 145.00)",
      *                      type="string",
      *                   ),
      *                  @OA\Property(

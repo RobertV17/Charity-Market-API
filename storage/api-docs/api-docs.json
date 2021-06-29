@@ -289,7 +289,7 @@
                                         "type": "string"
                                     },
                                     "price": {
-                                        "description": "Цена",
+                                        "description": "Цена (в формате 145.00)",
                                         "type": "string"
                                     },
                                     "photo": {
