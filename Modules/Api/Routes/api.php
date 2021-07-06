@@ -15,6 +15,6 @@ Route::group(['prefix' =>'items', 'middleware' => 'auth:sanctum'], function() {
     Route::get('all', [ItemController::class,'all'])->name('items.all');
     Route::get('{id}', [ItemController::class,'show'])->name('items.show');
     Route::post('add', [ItemController::class,'add'])->name('items.add');
-    Route::post('update/{id}', [ItemController::class,'update']);
-    Route::delete('drop/{id}', [ItemController::class,'drop']);
+    Route::post('update/{id}', [ItemController::class,'update'])->name('items.update');
+    Route::delete('drop/{id}', [ItemController::class,'drop'])->name('items.drop');
 });

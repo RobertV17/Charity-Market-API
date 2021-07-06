@@ -5,7 +5,9 @@ namespace Modules\Item\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Modules\Item\Database\Factories\ItemFactory;
+use Modules\User\Models\User;
 
 /**
  * Class Item
@@ -47,6 +49,14 @@ class Item extends Model
      */
     public function getPriceAttribute($value): float
     {
-        return (float)$value;
+        return (float)number_format($value, 2, '.', '');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'id','user_id');
     }
 }

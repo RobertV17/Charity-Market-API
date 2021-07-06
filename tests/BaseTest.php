@@ -109,9 +109,8 @@ class BaseTest extends TestCase
      */
     protected function createItems(int $count = 25): void
     {
-        User::factory()->count(5)->create();
-        Category::factory()->count(5)->create();
+        User::factory()->count(2)->create();
+        Category::factory()->count(3)->create();
         Item::factory()->count($count)->create();
     }
-
 }

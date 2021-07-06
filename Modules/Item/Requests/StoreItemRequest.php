@@ -30,8 +30,8 @@ class StoreItemRequest extends FormRequest
             'title'  => 'required|string|max:100|unique:item',
             'desc'   => 'required|string|max:255',
             'price'  => ['required', new CorrectPrice],
-            'photo'  => 'required|image|max:10000',
-            'cat_id' => 'required|exists:category,id'
+            'cat_id' => 'required|integer|exists:category,id',
+            'photo'  => 'required|image|max:10000'
         ];
     }
 

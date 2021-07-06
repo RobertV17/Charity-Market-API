@@ -269,6 +269,10 @@ class ItemController extends Controller
      */
     public function update($id, UpdateItemRequest $request): JsonResponse
     {
+        if(count($request->all()) === 0) {
+            return response()->fail(null, 'Request body is empty!');
+        }
+
         $item = $this->service->getTryById($id);
         $dto = SaveItemDto::populateByArray($request->toArray());
         $user = Auth::user();

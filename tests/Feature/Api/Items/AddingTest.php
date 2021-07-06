@@ -49,6 +49,10 @@ class AddingTest extends BaseTest
             'item' => $expectedData
         ]));
 
+        // todo-robert также добавить проверку валидности ссылки на фото
+        $filePath = public_path('images/items/preview/').basename($expectedData['photo_url']);
+        $this->assertFileExists($filePath);
+
         $this->clearDb();
         $this->removeStoredItemPreviewImages();
     }
@@ -211,6 +215,34 @@ class AddingTest extends BaseTest
                 ],
                 ['cat_id' => ['The cat id field is required.']]
             ],
+            // cat_id
+            "cat_id_is_not_integer_case_1"                => [
+                [
+                    'title'  => 'Item 1',
+                    'desc'   => 'Cool item 10/10.',
+                    'price'  => '250.30',
+                    'cat_id' => 'Cars'
+                ],
+                ['cat_id' => ['The cat id must be an integer.']]
+            ],
+            "cat_id_is_not_integer_case_2"                => [
+                [
+                    'title'  => 'Item 1',
+                    'desc'   => 'Cool item 10/10.',
+                    'price'  => '250.30',
+                    'cat_id' => '20.3'
+                ],
+                ['cat_id' => ['The cat id must be an integer.']]
+            ],
+            "cat_id_is_not_integer_case_3"                => [
+                [
+                    'title'  => 'Item 1',
+                    'desc'   => 'Cool item 10/10.',
+                    'price'  => '250.30',
+                    'cat_id' => '20,3'
+                ],
+                ['cat_id' => ['The cat id must be an integer.']]
+            ],
             // photo
             "no_preview_photo_is_provided"                 => [
                 [
@@ -239,7 +271,7 @@ class AddingTest extends BaseTest
                 ],
                 ['photo' => ['The photo must be an image.']]
             ],
-            "preview_photo_file_size_exceeds_the_maximum " => [
+            "preview_photo_file_size_exceeds_the_maximum" => [
                 [
                     'title' => 'Item 1',
                     'desc'  => 'Cool item 10/10.',
@@ -322,4 +354,46 @@ class AddingTest extends BaseTest
         $this->clearDb();
         $this->removeStoredItemPreviewImages();
     }
+    /** @test */
+    public function request_should_fail_when_no_auth_token_provided()
+    {
+        $data = [
+            'title'  => 'item 1',
+            'cat_id' => $this->category->id,
+            'desc'   => 'Cool item 10/10.',
+            'price'  => 300.24,
+            'photo'  => $this->previewPhoto,
+        ];
+
+        $this->postJson(route('items.add'), $data)
+            ->assertStatus(401)
+            ->assertExactJson($this->getFailResponse('Unauthenticated.'));
+
+        $this->clearDb();
+        $this->removeStoredItemPreviewImages();
+    }
+
+    /** @test */
+    public function request_should_fail_when_wrong_auth_token_provided()
+    {
+        $data = [
+            'title'  => 'item 1',
+            'cat_id' => $this->category->id,
+            'desc'   => 'Cool item 10/10.',
+            'price'  => 300.24,
+            'photo'  => $this->previewPhoto,
+        ];
+
+        $wrongHttpAuthHeaderWithToken = [
+            'Authorization' => $this->httpAuthHeaderWithToken['Authorization'].'1'
+        ];
+
+        $this->postJson(route('items.add'), $data, $wrongHttpAuthHeaderWithToken)
+            ->assertStatus(401)
+            ->assertExactJson($this->getFailResponse('Unauthenticated.'));
+
+        $this->clearDb();
+        $this->removeStoredItemPreviewImages();
+    }
+
 }
