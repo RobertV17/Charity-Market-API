@@ -1,14 +1,14 @@
 <?php
 
+namespace Tests\Feature\Api\Item;
 
-namespace Tests\Feature\Api\Items;
-
-
-use Illuminate\Routing\Middleware\ThrottleRequests;
 use Modules\Item\Models\Item;
-use Tests\BaseTest;
 
-class DeletionTest extends BaseTest
+/**
+ * Class DeletionTest
+ * @package Tests\Feature\Api\Item
+ */
+class DeletionTest extends ItemTestCase
 {
     private $existingItem;
     private $httpAuthHeaderWithToken;
@@ -16,8 +16,6 @@ class DeletionTest extends BaseTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->withoutMiddleware(ThrottleRequests::class);
-
         $this->createItems(1);
         $item = $this->existingItem = Item::all()->first();
 
@@ -29,7 +27,7 @@ class DeletionTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_success_when_all_data_valid()
+    public function request_should_success_when_data_is_valid(): void
     {
         $route = route('items.drop', $this->existingItem->id);
         $this->deleteJson($route, [], $this->httpAuthHeaderWithToken)
@@ -41,7 +39,7 @@ class DeletionTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_no_auth_token_provided()
+    public function request_should_fail_when_no_auth_token_provided(): void
     {
         $route = route('items.drop', $this->existingItem->id);
 
@@ -54,7 +52,7 @@ class DeletionTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_wrong_auth_token_provided()
+    public function request_should_fail_when_wrong_auth_token_provided(): void
     {
         $route = route('items.drop', $this->existingItem->id);
 
@@ -71,7 +69,7 @@ class DeletionTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_user_is_not_the_seller_of_this_item()
+    public function request_should_fail_when_user_is_not_the_seller_of_this_item(): void
     {
         $newUser = $this->createFakeUser();
         $newUserAuthToken = $this->createAuthTokenForUser($newUser);
@@ -88,7 +86,7 @@ class DeletionTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_specified_item_not_found()
+    public function request_should_fail_when_specified_item_not_found(): void
     {
         $route = route('items.drop', $this->existingItem->id + 3);
 
@@ -101,7 +99,7 @@ class DeletionTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_specified_item_id_in_url_not_valid()
+    public function request_should_fail_when_specified_item_id_in_url_not_valid(): void
     {
         $route = route('items.drop', 'item1');
 

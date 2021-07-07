@@ -1,37 +1,38 @@
 <?php
 
+namespace Tests\Feature\Api\Item;
 
-namespace Tests\Feature\Api\Items;
-
-use Illuminate\Routing\Middleware\ThrottleRequests;
 use Modules\Item\Models\Item;
-use \Tests\BaseTest;
 
-class GettingOneTest extends BaseTest
+/**
+ * Class GettingOneTest
+ * @package Tests\Feature\Api\Item
+ */
+class GettingOneTest extends ItemTestCase
 {
+    private $httpAuthHeaderWithToken;
+
     protected function setUp(): void
     {
         parent::setUp();
-        $this->withoutMiddleware(ThrottleRequests::class);
+        $user = $this->createFakeUser();
+        $authToken = $this->createAuthTokenForUser($user);
+        $this->httpAuthHeaderWithToken = ['Authorization' => 'Bearer '.$authToken];
     }
 
     /** @test */
-    public function request_schould_success_when_item_exists_and_id_valid()
+    public function request_schould_success_when_item_exists_and_id_valid(): void
     {
-        $user = $this->createFakeUser();
-        $token = $this->createAuthTokenForUser($user);
-
         $this->createItems(1);
         $item = Item::all()->first();
 
         $route = route('items.show', $item->id);
-        $headers = ['Authorization' => 'Bearer '.$token];
 
         $expectedDate = [
             'item' => $item->toArray()
         ];
 
-        $this->getJson($route, $headers)
+        $this->getJson($route, $this->httpAuthHeaderWithToken)
             ->assertStatus(200)
             ->assertExactJson($this->getSuccessResponse(null, $expectedDate));
 
@@ -39,7 +40,7 @@ class GettingOneTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_auth_token_no_provided()
+    public function request_should_fail_when_auth_token_no_provided(): void
     {
         $this->createItems(1);
         $item = Item::all()->first();
@@ -52,18 +53,14 @@ class GettingOneTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_item_not_founded()
+    public function request_should_fail_when_item_not_founded(): void
     {
-        $user = $this->createFakeUser();
-        $token = $this->createAuthTokenForUser($user);
-
         $this->createItems(1);
         $item = Item::all()->first();
 
         $route = route('items.show', $item->id + 3);
-        $headers = ['Authorization' => 'Bearer '.$token];
 
-        $this->getJson($route, $headers)
+        $this->getJson($route, $this->httpAuthHeaderWithToken)
             ->assertStatus(404)
             ->assertExactJson($this->getFailResponse('Item not founded'));
 
@@ -71,17 +68,13 @@ class GettingOneTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_item_id_not_valid()
+    public function request_should_fail_when_item_id_not_valid(): void
     {
-        $user = $this->createFakeUser();
-        $token = $this->createAuthTokenForUser($user);
-
         $this->createItems(1);
 
         $route = route('items.show', 'qwerty');
-        $headers = ['Authorization' => 'Bearer '.$token];
 
-        $this->getJson($route, $headers)
+        $this->getJson($route, $this->httpAuthHeaderWithToken)
             ->assertStatus(404)
             ->assertExactJson($this->getFailResponse('Item not founded'));
 

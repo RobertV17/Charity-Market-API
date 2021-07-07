@@ -1,16 +1,17 @@
 <?php
 
-
-namespace Tests\Feature\Api\Items;
+namespace Tests\Feature\Api\Item;
 
 use Illuminate\Http\UploadedFile;
-use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Str;
 use Modules\Item\Models\Category;
 use Modules\Item\Models\Item;
-use Tests\BaseTest;
 
-class AddingTest extends BaseTest
+/**
+ * Class AddingTest
+ * @package Tests\Feature\Api\Item
+ */
+class AddingTest extends ItemTestCase
 {
     private $category;
     private $previewPhoto;
@@ -19,8 +20,6 @@ class AddingTest extends BaseTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->withoutMiddleware(ThrottleRequests::class);
-
         $user = $this->createFakeUser();
         $authToken = $this->createAuthTokenForUser($user);
 
@@ -30,7 +29,7 @@ class AddingTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_success_when_item_data_valid()
+    public function request_should_success_when_data_is_valid(): void
     {
         $data = [
             'title'  => 'item 1',
@@ -58,7 +57,7 @@ class AddingTest extends BaseTest
     }
 
     /** @dataProvider  */
-    public function validationTestsProvider(): array
+    public function wrongRequestDataProvider(): array
     {
         return [
             // title
@@ -284,10 +283,10 @@ class AddingTest extends BaseTest
     }
 
     /**
-     * @dataProvider validationTestsProvider
+     * @dataProvider wrongRequestDataProvider
      * @test
      */
-    public function request_should_fail_when($data, $validationError)
+    public function request_should_fail_when($data, $expectedValidationErrors): void
     {
         if ( ! array_key_exists('cat_id', $data)) {
             $data = array_merge($data, ['cat_id' => $this->category->id]);
@@ -300,14 +299,14 @@ class AddingTest extends BaseTest
         $response = $this->postJson(route('items.add'), $data, $this->httpAuthHeaderWithToken);
 
         $response->assertStatus(403)
-            ->assertExactJson($this->getFailResponse('Incorrect data', $validationError));
+            ->assertExactJson($this->getFailResponse('Incorrect data', $expectedValidationErrors));
 
         $this->clearDb();
         $this->removeStoredItemPreviewImages();
     }
 
     /** @test */
-    public function request_should_fail_when_item_with_provided_title_already_exists()
+    public function request_should_fail_when_item_with_provided_title_already_exists(): void
     {
         $this->createItems(1);
         $item = Item::all()->first();
@@ -333,7 +332,7 @@ class AddingTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_category_id_provided_is_not_exists()
+    public function request_should_fail_when_category_id_provided_is_not_exists(): void
     {
         $data = [
             'title'  => 'Title 2',
@@ -355,7 +354,7 @@ class AddingTest extends BaseTest
         $this->removeStoredItemPreviewImages();
     }
     /** @test */
-    public function request_should_fail_when_no_auth_token_provided()
+    public function request_should_fail_when_no_auth_token_provided(): void
     {
         $data = [
             'title'  => 'item 1',
@@ -395,5 +394,4 @@ class AddingTest extends BaseTest
         $this->clearDb();
         $this->removeStoredItemPreviewImages();
     }
-
 }

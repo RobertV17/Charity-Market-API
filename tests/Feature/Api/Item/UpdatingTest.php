@@ -1,16 +1,17 @@
 <?php
 
-
-namespace Tests\Feature\Api\Items;
+namespace Tests\Feature\Api\Item;
 
 use Illuminate\Http\UploadedFile;
-use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Str;
 use Modules\Item\Models\Category;
 use Modules\Item\Models\Item;
-use Tests\BaseTest;
 
-class UpdatingTest extends BaseTest
+/**
+ * Class UpdatingTest
+ * @package Tests\Feature\Api\Item
+ */
+class UpdatingTest extends ItemTestCase
 {
     private $existingItem;
     private $newCategory;
@@ -20,8 +21,6 @@ class UpdatingTest extends BaseTest
     protected function setUp(): void
     {
         parent::setUp();
-        $this->withoutMiddleware(ThrottleRequests::class);
-
         $this->createItems(1);
         $item = $this->existingItem = Item::all()->first();
 
@@ -35,7 +34,7 @@ class UpdatingTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_success_when_all_fields_exists_and_valid()
+    public function request_should_success_when_all_fields_exists_and_valid(): void
     {
         $data = [
             'title'  => 'New item title!',
@@ -64,7 +63,7 @@ class UpdatingTest extends BaseTest
     }
 
     /** @dataProvider */
-    public function partialUpdateDataProvider()
+    public function validDataForPartialUpdateProvider(): array
     {
         return [
             "only_title_provided" => [
@@ -86,10 +85,10 @@ class UpdatingTest extends BaseTest
     }
 
     /**
-     * @dataProvider partialUpdateDataProvider
+     * @dataProvider validDataForPartialUpdateProvider
      * @test
      */
-    public function request_should_success_when($data)
+    public function request_should_success_when($data): void
     {
         $route = route('items.update', $this->existingItem->id);
         $response = $this->postJson($route, $data, $this->httpAuthHeaderWithToken)
@@ -106,7 +105,7 @@ class UpdatingTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_success_when_only_valid_category_id_provided()
+    public function request_should_success_when_only_valid_category_id_provided(): void
     {
         $data = [
             'cat_id' => $this->newCategory->id
@@ -127,7 +126,7 @@ class UpdatingTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_success_when_only_photo_provided()
+    public function request_should_success_when_only_photo_provided(): void
     {
         $data = [
             'photo' => $this->newPreviewPhoto
@@ -152,7 +151,7 @@ class UpdatingTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_no_auth_token_provided()
+    public function request_should_fail_when_no_auth_token_provided(): void
     {
         $data = [
             'title'  => 'New item title!',
@@ -173,7 +172,7 @@ class UpdatingTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_wrong_auth_token_provided()
+    public function request_should_fail_when_wrong_auth_token_provided(): void
     {
         $data = [
             'title'  => 'New item title!',
@@ -198,7 +197,7 @@ class UpdatingTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_request_body_is_empty()
+    public function request_should_fail_when_request_body_is_empty(): void
     {
         $data = [];
 
@@ -212,7 +211,7 @@ class UpdatingTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_user_is_not_the_seller_of_this_item()
+    public function request_should_fail_when_user_is_not_the_seller_of_this_item(): void
     {
         $data = [
             'title'  => 'New item title!',
@@ -237,7 +236,7 @@ class UpdatingTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_specified_item_not_found()
+    public function request_should_fail_when_specified_item_not_found(): void
     {
         $data = [
             'title'  => 'New item title!',
@@ -258,7 +257,7 @@ class UpdatingTest extends BaseTest
     }
 
     /** @dataProvider */
-    public function invalidDataProvider(): array
+    public function wrongRequestDataProvider(): array
     {
         return [
             // title
@@ -396,22 +395,22 @@ class UpdatingTest extends BaseTest
     }
 
     /**
-     * @dataProvider invalidDataProvider
+     * @dataProvider wrongRequestDataProvider
      * @test
      */
-    public function request_should_fail_when($data, $validationError)
+    public function request_should_fail_when($data, $expectedValidationErrors): void
     {
         $route = route('items.update', $this->existingItem->id);
         $this->postJson($route, $data, $this->httpAuthHeaderWithToken)
             ->assertStatus(403)
-            ->assertExactJson($this->getFailResponse('Incorrect data', $validationError));
+            ->assertExactJson($this->getFailResponse('Incorrect data', $expectedValidationErrors));
 
         $this->clearDb();
         $this->removeStoredItemPreviewImages();
     }
 
     /** @test */
-    public function request_should_fail_when_item_with_specific_title_already_exist()
+    public function request_should_fail_when_item_with_specific_title_already_exist(): void
     {
         $newItem = Item::factory()->count(1)->create()[0];
 
@@ -431,7 +430,7 @@ class UpdatingTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_category_id_provided_is_not_exists()
+    public function request_should_fail_when_category_id_provided_is_not_exists(): void
     {
         $data = [
             'cat_id' => $this->newCategory->id + 2

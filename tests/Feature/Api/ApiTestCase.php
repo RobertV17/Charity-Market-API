@@ -1,39 +1,44 @@
 <?php
 
-
-namespace Tests;
+namespace Tests\Feature\Api;
 
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Modules\Item\Models\Category;
-use Modules\Item\Models\Item;
 use Modules\User\Models\User;
+use Tests\TestCase;
 
 /**
  * Class BaseTest
  * @package Tests
  */
-class BaseTest extends TestCase
+class ApiTestCase extends TestCase
 {
     use WithFaker;
+
+    private $tableForCleaning = [
+        'category',
+        'personal_access_tokens',
+        'users',
+        'item'
+    ];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->withoutMiddleware(ThrottleRequests::class);
+    }
 
     protected function clearDb(): void
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        DB::table('category')->truncate();
-        DB::table('personal_access_tokens')->truncate();
-        DB::table('users')->truncate();
-        DB::table('item')->truncate();
+        foreach($this->tableForCleaning as $table) {
+            DB::table($table)->truncate();
+        }
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-    }
-
-    protected function removeStoredItemPreviewImages(): void
-    {
-        File::deleteDirectory(public_path('images/items/preview'));
     }
 
     /**
@@ -90,27 +95,5 @@ class BaseTest extends TestCase
     protected function createAuthTokenForUser(User $user): string
     {
         return $user->createToken($user->login)->plainTextToken;
-    }
-
-    /**
-     * @param $user
-     *
-     * @return bool
-     */
-    protected function checkExistsAuthTokenByUser($user): bool
-    {
-        return DB::table('personal_access_tokens')
-            ->where('tokenable_id', $user->id)
-            ->exists();
-    }
-
-    /**
-     * @param  int  $count
-     */
-    protected function createItems(int $count = 25): void
-    {
-        User::factory()->count(2)->create();
-        Category::factory()->count(3)->create();
-        Item::factory()->count($count)->create();
     }
 }

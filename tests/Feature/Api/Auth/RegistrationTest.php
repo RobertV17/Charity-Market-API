@@ -2,23 +2,46 @@
 
 namespace Tests\Feature\Api\Auth;
 
-use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Str;
 use Modules\User\Models\User;
-use Tests\BaseTest;
 
-class RegistrationTest extends BaseTest
+/**
+ * Class RegistrationTest
+ * @package Tests\Feature\Api\Auth
+ */
+class RegistrationTest extends AuthTestCase
 {
-    protected function setUp(): void
+    /** @test  * */
+    public function request_should_success_when_data_is_valid(): void
     {
-        parent::setUp();
-        $this->withoutMiddleware(ThrottleRequests::class);
+        $data = [
+            "email"    => "tester@gmail.com",
+            "login"    => "Best Tester",
+            "password" => "1234qwer"
+        ];
+
+        $response = $this->postJson(route('auth.registration'), $data);
+
+        $user = User::all()->first();
+        $exceptedData = [
+            'user'  => $user->toArray(),
+            'token' => $response->original['data']['token']
+        ];
+
+        $response->assertStatus(200)
+            ->assertExactJson($this->getSuccessResponse('Registration was successful!', $exceptedData));
+
+        $tokenIsExist = $this->checkExistsAuthTokenByUser($user);
+        $this->assertEquals(true, $tokenIsExist);
+
+        $this->clearDb();
     }
 
-    public function validationTestsProvider(): array
+    /** @dataProvider  */
+    public function wrongRequestDataProvider(): array
     {
         return [
-            // EMAIL
+            // email
             "no_email_is_provided" => [
                 [
                     "login"    => "Best Tester",
@@ -26,7 +49,6 @@ class RegistrationTest extends BaseTest
                 ],
                 ['email' => ['The email field is required.']]
             ],
-
             "email_is_not_string" => [
                 [
                     "email"    => 3,
@@ -35,7 +57,6 @@ class RegistrationTest extends BaseTest
                 ],
                 ['email' => ['The email must be a string.']]
             ],
-
             "email_has_more_than_255_characters" => [
                 [
                     "email"    => Str::random(256),
@@ -44,7 +65,7 @@ class RegistrationTest extends BaseTest
                 ],
                 ['email' => ['The email may not be greater than 255 characters.']]
             ],
-            // LOGIN
+            // login
             "no_login_is_provided"               => [
                 [
                     "email"    => "tester@gmail.com",
@@ -52,7 +73,6 @@ class RegistrationTest extends BaseTest
                 ],
                 ['login' => ['The login field is required.']]
             ],
-
             "login_is_not_string" => [
                 [
                     "email"    => "tester@gmail.com",
@@ -61,7 +81,6 @@ class RegistrationTest extends BaseTest
                 ],
                 ['login' => ['The login must be a string.']]
             ],
-
             "login_has_more_than_150_characters" => [
                 [
                     "email"    => "tester@gmail.com",
@@ -70,7 +89,7 @@ class RegistrationTest extends BaseTest
                 ],
                 ['login' => ['The login may not be greater than 150 characters.']]
             ],
-            // PASSWORD
+            // password
             "no_password_is_provided"            => [
                 [
                     "email" => "tester@gmail.com",
@@ -78,7 +97,6 @@ class RegistrationTest extends BaseTest
                 ],
                 ['password' => ['The password field is required.']]
             ],
-
             "password_is_not_string" => [
                 [
                     "email"    => "tester@gmail.com",
@@ -87,7 +105,6 @@ class RegistrationTest extends BaseTest
                 ],
                 ['password' => ['The password must be a string.']]
             ],
-
             "password_has_more_than_150_characters" => [
                 [
                     "email"    => "tester@gmail.com",
@@ -100,21 +117,21 @@ class RegistrationTest extends BaseTest
     }
 
     /**
-     * @dataProvider validationTestsProvider
+     * @dataProvider wrongRequestDataProvider
      * @test
      */
-    public function request_should_fail_when($data, $validationError)
+    public function request_should_fail_when($data, $expectedValidationErrors): void
     {
         $response = $this->postJson(route('auth.registration'), $data);
 
         $response->assertStatus(403)
-            ->assertExactJson($this->getFailResponse('Incorrect data', $validationError));
+            ->assertExactJson($this->getFailResponse('Incorrect data', $expectedValidationErrors));
 
         $this->clearDb();
     }
 
     /** @test  * */
-    public function request_should_fail_when_user_with_provided_email_already_exists()
+    public function request_should_fail_when_user_with_provided_email_already_exists(): void
     {
         $user = $this->createFakeUser();
 
@@ -138,7 +155,7 @@ class RegistrationTest extends BaseTest
     }
 
     /** @test  * */
-    public function request_should_fail_when_user_with_provided_login_already_exists()
+    public function request_should_fail_when_user_with_provided_login_already_exists(): void
     {
         $user = $this->createFakeUser();
 
@@ -157,32 +174,6 @@ class RegistrationTest extends BaseTest
 
         $response->assertStatus(403)
             ->assertExactJson($this->getFailResponse('Incorrect data', $expectedData));
-
-        $this->clearDb();
-    }
-
-    /** @test  * */
-    public function user_registration_with_valid_data()
-    {
-        $data = [
-            "email"    => "tester@gmail.com",
-            "login"    => "Best Tester",
-            "password" => "1234qwer"
-        ];
-
-        $response = $this->postJson(route('auth.registration'), $data);
-
-        $user = User::all()->first();
-        $exceptedData = [
-            'user'  => $user->toArray(),
-            'token' => $response->original['data']['token']
-        ];
-
-        $response->assertStatus(200)
-            ->assertExactJson($this->getSuccessResponse('Registration was successful!', $exceptedData));
-
-        $tokenIsExist = $this->checkExistsAuthTokenByUser($user);
-        $this->assertEquals(true, $tokenIsExist);
 
         $this->clearDb();
     }

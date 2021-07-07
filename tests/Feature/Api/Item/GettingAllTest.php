@@ -1,22 +1,17 @@
 <?php
 
+namespace Tests\Feature\Api\Item;
 
-namespace Tests\Feature\Api\Items;
-
-use Illuminate\Routing\Middleware\ThrottleRequests;
 use Modules\Item\Models\Item;
-use Tests\BaseTest;
 
-class GettingAllTest extends BaseTest
+/**
+ * Class GettingAllTest
+ * @package Tests\Feature\Api\Item
+ */
+class GettingAllTest extends ItemTestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->withoutMiddleware(ThrottleRequests::class);
-    }
-
     /** @test */
-    public function request_should_success()
+    public function request_should_success_when_data_is_valid(): void
     {
         $this->createItems(25);
         $expectedData = Item::all()->take(10)->toArray();
@@ -24,7 +19,8 @@ class GettingAllTest extends BaseTest
         $user = $this->createFakeUser();
         $token = $this->createAuthTokenForUser($user);
 
-        $route = route('items.all',['page' => 1]);
+        $data = ['page' => 1];
+        $route = route('items.all', $data);
         $headers = ['Authorization' => 'Bearer '.$token];
 
         $this->getJson($route, $headers)
@@ -75,7 +71,7 @@ class GettingAllTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_success_when_non_existent_page_provided()
+    public function request_should_success_when_non_existent_page_provided(): void
     {
         $this->createItems(25);
 
@@ -137,7 +133,7 @@ class GettingAllTest extends BaseTest
      * то дефолтный пагинатор Laravel использует 1ую страницу
      * @test
      */
-    public function request_should_success_when_page_in_incorrect_form_provided()
+    public function request_should_success_when_page_in_incorrect_form_provided(): void
     {
         $this->createItems(25);
         $expectedData = Item::all()->take(10)->toArray();
@@ -200,7 +196,7 @@ class GettingAllTest extends BaseTest
      * то дефолтный пагинатор Laravel использует 1ую страницу
      * @test
      */
-    public function request_should_success_when_page_no_provided()
+    public function request_should_success_when_page_no_provided(): void
     {
         $this->createItems(25);
         $expectedData = Item::all()->take(10)->toArray();
@@ -258,7 +254,7 @@ class GettingAllTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_success_when_no_items_in_db()
+    public function request_should_success_when_no_items_in_db(): void
     {
         $user = $this->createFakeUser();
         $token = $this->createAuthTokenForUser($user);
@@ -304,7 +300,7 @@ class GettingAllTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_success_when_non_existent_page_provided_and_no_items_in_db()
+    public function request_should_success_when_non_existent_page_provided_and_no_items_in_db(): void
     {
         $user = $this->createFakeUser();
         $token = $this->createAuthTokenForUser($user);
@@ -354,7 +350,7 @@ class GettingAllTest extends BaseTest
      * то дефолтный пагинатор Laravel использует 1ую страницу
      * @test
      */
-    public function request_should_success_when_page_in_incorrect_form_provided_and_no_items_in_db()
+    public function request_should_success_when_page_in_incorrect_form_provided_and_no_items_in_db(): void
     {
         $user = $this->createFakeUser();
         $token = $this->createAuthTokenForUser($user);
@@ -404,7 +400,7 @@ class GettingAllTest extends BaseTest
      * то дефолтный пагинатор Laravel использует 1ую страницу
      * @test
      */
-    public function request_should_success_when_page_no_provided_and_no_items_in_db()
+    public function request_should_success_when_page_no_provided_and_no_items_in_db(): void
     {
         $user = $this->createFakeUser();
         $token = $this->createAuthTokenForUser($user);
@@ -449,7 +445,7 @@ class GettingAllTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_auth_token_no_provided()
+    public function request_should_fail_when_auth_token_no_provided(): void
     {
         $this->getJson(route('items.all'))
             ->assertStatus(401)
@@ -459,7 +455,7 @@ class GettingAllTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_auth_token_is_wrong()
+    public function request_should_fail_when_auth_token_is_wrong(): void
     {
         $user = $this->createFakeUser();
         $token = $this->createAuthTokenForUser($user);

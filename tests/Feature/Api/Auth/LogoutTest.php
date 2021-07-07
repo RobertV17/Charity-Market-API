@@ -1,21 +1,28 @@
 <?php
 
-
 namespace Tests\Feature\Api\Auth;
 
-use Illuminate\Routing\Middleware\ThrottleRequests;
-use Tests\BaseTest;
-
-class LogoutTest extends BaseTest
+/**
+ * Class LogoutTest
+ * @package Tests\Feature\Api\Auth
+ */
+class LogoutTest extends AuthTestCase
 {
-    protected function setUp(): void
+    /** @test */
+    public function request_should_success_when_data_is_valid(): void
     {
-        parent::setUp();
-        $this->withoutMiddleware(ThrottleRequests::class);
+        $user = $this->createFakeUser();
+        $token = $this->createAuthTokenForUser($user);
+
+        $this->getJson(route('auth.logout'), ['Authorization' => 'Bearer '.$token])
+            ->assertStatus(200)
+            ->assertExactJson($this->getSuccessResponse('Logout was successful!'));
+
+        $this->clearDb();
     }
 
     /** @test */
-    public function request_should_fail_when_auth_token_no_provided()
+    public function request_should_fail_when_auth_token_no_provided(): void
     {
         $this->getJson(route('auth.logout'))
             ->assertStatus(401)
@@ -25,7 +32,7 @@ class LogoutTest extends BaseTest
     }
 
     /** @test */
-    public function request_should_fail_when_auth_token_is_wrong()
+    public function request_should_fail_when_auth_token_is_wrong(): void
     {
         $user = $this->createFakeUser();
         $token = $this->createAuthTokenForUser($user);
@@ -33,19 +40,6 @@ class LogoutTest extends BaseTest
         $this->getJson(route('auth.logout'), ['Authorization' => 'Bearer wrong1'.$token])
             ->assertStatus(401)
             ->assertExactJson($this->getFailResponse('Unauthenticated.'));
-
-        $this->clearDb();
-    }
-
-    /** @test */
-    public function logout_authenticated_user()
-    {
-        $user = $this->createFakeUser();
-        $token = $this->createAuthTokenForUser($user);
-
-        $this->getJson(route('auth.logout'), ['Authorization' => 'Bearer '.$token])
-            ->assertStatus(200)
-            ->assertExactJson($this->getSuccessResponse('Logout was successful!'));
 
         $this->clearDb();
     }
