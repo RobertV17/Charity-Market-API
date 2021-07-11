@@ -2,7 +2,6 @@
 
 namespace Modules\Item\Providers;
 
-
 use App\Providers\BaseModuleServiceProvider;
 
 class ItemServiceProvider extends BaseModuleServiceProvider

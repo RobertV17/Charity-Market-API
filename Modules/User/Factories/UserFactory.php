@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Modules\User\Factories;
-
 
 use Modules\User\Models\User;
 

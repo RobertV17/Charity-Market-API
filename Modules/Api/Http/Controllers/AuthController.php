@@ -71,7 +71,7 @@ class AuthController extends Controller
     {
         $dto = RegistrationDto::populateByArray($request->all());
         $user = $this->userService->create($dto);
-        $token = $this->service->createToken($user);
+        $token = $this->service->createTokenForUser($user);
 
         return response()->success('Registration was successful!',
             [

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Modules\User\Providers;
-
 
 use App\Providers\BaseModuleServiceProvider;
 

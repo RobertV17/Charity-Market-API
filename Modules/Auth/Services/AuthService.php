@@ -14,7 +14,7 @@ class AuthService
      * @param User $user
      * @return string
      */
-    public function createToken(User $user): string
+    public function createTokenForUser(User $user): string
     {
         return $user->createToken($user->login)->plainTextToken;
     }
@@ -32,7 +32,7 @@ class AuthService
             throw new AuthenticationException('The specified data is incorrect');
         }
 
-        return $this->createToken($user);
+        return $this->createTokenForUser($user);
     }
 
     /**

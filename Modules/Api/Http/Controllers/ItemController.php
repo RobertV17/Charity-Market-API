@@ -175,7 +175,6 @@ class ItemController extends Controller
     {
         $dto = SaveItemDto::populateByArray($request->toArray());
         $user = Auth::user();
-
         $item = $this->service->addItemByUser($user, $dto);
 
         return response()->success('Item was added',

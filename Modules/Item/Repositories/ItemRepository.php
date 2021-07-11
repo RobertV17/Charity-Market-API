@@ -11,7 +11,6 @@ use Modules\Item\Models\Item;
  */
 class ItemRepository
 {
-
     /**
      * @return LengthAwarePaginator
      */
@@ -19,7 +18,6 @@ class ItemRepository
     {
         return Item::query()->paginate(10);
     }
-
 
     /**
      * @param $id
@@ -31,7 +29,6 @@ class ItemRepository
         //todo-robert проверит на предмет уязвимости SQL injection
         return Item::query()->where('id', $id)->first();
     }
-
 
     /**
      * @param  Item  $item
