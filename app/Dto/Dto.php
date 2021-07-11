@@ -1,13 +1,11 @@
 <?php
 
-
 namespace App\Dto;
-
 
 class Dto
 {
     /**
-     * @param array|null $data
+     * @param  array|null  $data
      *
      * @return static
      */
@@ -31,7 +29,7 @@ class Dto
         $attributes = [];
 
         foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
-            $attributes []= $property->getName();
+            $attributes [] = $property->getName();
         }
 
         return $attributes;
